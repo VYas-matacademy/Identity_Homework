@@ -29,9 +29,23 @@ namespace Server
         // clients want to access resources (aka scopes)
         public static IEnumerable<Client> GetClients()
         {
+
+
             // client credentials client
             return new List<Client>
             {
+                new Client
+                {
+                    ClientId = "mvc3",
+                    AllowedGrantTypes = GrantTypes.ResourceOwnerPassword,
+
+                    ClientSecrets =
+                    {
+                        new Secret("secret".Sha256())
+                    },
+                    AllowedScopes = { "api1" }
+                },
+
                 new Client
                 {
                     ClientId = "434483408261-55tc8n0cs4ff1fe21ea8df2o443v2iuc.apps.googleusercontent.com",
@@ -89,16 +103,31 @@ namespace Server
             {
                 new TestUser
                 {
-                    SubjectId = "1",
-                    Username = "alice",
-                    Password = "password",
+                    SubjectId = "0",
+                    Username = "Vladimir@gmail.com",
+                    Password = "alsoosla",
 
                     Claims = new List<Claim>
                     {
-                        new Claim("name", "Alice"),
-                        new Claim("website", "https://alice.com")
+                        new Claim("name", "Vladimir"),
+                        new Claim("website", "https://MyCustomWeb.com.ua")
                     }
                 },
+
+                new TestUser
+                {
+                    SubjectId = "1",
+                    Username = "Stepan@gmail.com",
+                    Password = "qwerty",
+
+                    Claims = new List<Claim>
+                    {
+                        new Claim("name", "Stepan"),
+                        new Claim("website", "https://Stepan.com"),
+                        new Claim("achievement", "unlocked")
+                    }
+                },
+
                 new TestUser
                 {
                     SubjectId = "2",

@@ -8,6 +8,9 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using MvcClient2.Models;
+using MvcClient2.Services;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 
 namespace MvcClient2
 {
@@ -16,8 +19,7 @@ namespace MvcClient2
         public Startup(IHostingEnvironment env)
         {
             var builder = new ConfigurationBuilder()
-                .SetBasePath(env.ContentRootPath)
-                .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true);
+                .SetBasePath(env.ContentRootPath);
 
             if (env.IsDevelopment())
             {
@@ -34,16 +36,33 @@ namespace MvcClient2
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
+            // Add framework services.
+
+            services.AddIdentity<ApplicationUser, IdentityRole>()
+                .AddDefaultTokenProviders();
+
+            services.AddMvc();
+
+            // Add application services.
+            services.AddTransient<IEmailSender, AuthMessageSender>();
+            services.AddTransient<ISmsSender, AuthMessageSender>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
         {
-            loggerFactory.AddConsole();
+            loggerFactory.AddConsole(Configuration.GetSection("Logging"));
+            loggerFactory.AddDebug();
 
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
+                app.UseDatabaseErrorPage();
+                app.UseBrowserLink();
+            }
+            else
+            {
+                app.UseExceptionHandler("/Home/Error");
             }
 
             app.UseStaticFiles();
@@ -56,6 +75,16 @@ namespace MvcClient2
                 AutomaticAuthenticate = true,
                 AutomaticChallenge = true
 
+            });
+
+
+            // Add external authentication middleware below. To configure them please see https://go.microsoft.com/fwlink/?LinkID=532715
+
+            app.UseMvc(routes =>
+            {
+                routes.MapRoute(
+                    name: "default",
+                    template: "{controller=Home}/{action=Index}/{id?}");
             });
 
         }

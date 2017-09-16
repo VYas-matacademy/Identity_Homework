@@ -1,4 +1,6 @@
-﻿using System.Linq;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -22,12 +24,12 @@ namespace MvcClient2.Controllers
         private readonly ILogger _logger;
 
         public ManageController(
-            UserManager<ApplicationUser> userManager,
-            SignInManager<ApplicationUser> signInManager,
-            IOptions<IdentityCookieOptions> identityCookieOptions,
-            IEmailSender emailSender,
-            ISmsSender smsSender,
-            ILoggerFactory loggerFactory)
+          UserManager<ApplicationUser> userManager,
+          SignInManager<ApplicationUser> signInManager,
+          IOptions<IdentityCookieOptions> identityCookieOptions,
+          IEmailSender emailSender,
+          ISmsSender smsSender,
+          ILoggerFactory loggerFactory)
         {
             _userManager = userManager;
             _signInManager = signInManager;
@@ -44,12 +46,12 @@ namespace MvcClient2.Controllers
         {
             ViewData["StatusMessage"] =
                 message == ManageMessageId.ChangePasswordSuccess ? "Your password has been changed."
-                    : message == ManageMessageId.SetPasswordSuccess ? "Your password has been set."
-                        : message == ManageMessageId.SetTwoFactorSuccess ? "Your two-factor authentication provider has been set."
-                            : message == ManageMessageId.Error ? "An error has occurred."
-                                : message == ManageMessageId.AddPhoneSuccess ? "Your phone number was added."
-                                    : message == ManageMessageId.RemovePhoneSuccess ? "Your phone number was removed."
-                                        : "";
+                : message == ManageMessageId.SetPasswordSuccess ? "Your password has been set."
+                : message == ManageMessageId.SetTwoFactorSuccess ? "Your two-factor authentication provider has been set."
+                : message == ManageMessageId.Error ? "An error has occurred."
+                : message == ManageMessageId.AddPhoneSuccess ? "Your phone number was added."
+                : message == ManageMessageId.RemovePhoneSuccess ? "Your phone number was removed."
+                : "";
 
             var user = await GetCurrentUserAsync();
             if (user == null)
@@ -280,9 +282,9 @@ namespace MvcClient2.Controllers
         {
             ViewData["StatusMessage"] =
                 message == ManageMessageId.RemoveLoginSuccess ? "The external login was removed."
-                    : message == ManageMessageId.AddLoginSuccess ? "The external login was added."
-                        : message == ManageMessageId.Error ? "An error has occurred."
-                            : "";
+                : message == ManageMessageId.AddLoginSuccess ? "The external login was added."
+                : message == ManageMessageId.Error ? "An error has occurred."
+                : "";
             var user = await GetCurrentUserAsync();
             if (user == null)
             {
